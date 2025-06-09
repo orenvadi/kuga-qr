@@ -1,3 +1,10 @@
 server:
   port: 8888
   timeout: 2s
+db:
+  host: localhost
+  port: 5432
+  username: postgres
+  password: postgres
+  dbname: lms
+  sslmode: disable

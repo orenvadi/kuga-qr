@@ -10,11 +10,21 @@ import (
 
 type Config struct {
 	Server Server `yaml:"server"`
+	Db     Db     `yaml:"db"`
 }
 
 type Server struct {
 	Port    int           `yaml:"port"`
 	Timeout time.Duration `yaml:"timeout"`
+}
+
+type Db struct {
+	Host     string `json:"host"`
+	Port     string `json:"port"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	DBName   string `json:"dbname"`
+	SSLMode  string `json:"sslmode"`
 }
 
 func MustLoad(configPath string) *Config {
