@@ -59,6 +59,14 @@ CREATE TABLE schedule (
     FOREIGN KEY (room_id) REFERENCES room(id)
 );
 
+-- Create the qrcodes table with foreign key to schedule
+CREATE TABLE qrcodes (
+    id INT PRIMARY KEY,
+    code VARCHAR,
+    schedule_id INT,
+    FOREIGN KEY (schedule_id) REFERENCES schedule(id)
+);
+
 -- Create the course table with foreign keys to group, subject, and teacher
 CREATE TABLE course (
     id INT PRIMARY KEY,
@@ -111,6 +119,7 @@ DROP TABLE colloqium;
 DROP TABLE course_work;
 DROP TABLE marks_and_absence;
 DROP TABLE schedule;
+DROP TABLE qrcodes;
 DROP TABLE course;
 DROP TABLE subject;
 DROP TABLE student;

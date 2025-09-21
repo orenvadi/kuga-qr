@@ -52,6 +52,13 @@ erDiagram
   schedule||--||teacher: contains-one
   schedule||--||room: contains-one
 
+  qrcodes{
+    int id PK
+    string code
+    string schedule_id FK
+  }
+  qrcodes||--||schedule: contains-one
+
   course{
     int id PK
     string group_id FK

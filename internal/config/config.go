@@ -14,7 +14,7 @@ type Config struct {
 }
 
 type Server struct {
-	Port    int           `yaml:"port"`
+	Port    string        `yaml:"port"`
 	Timeout time.Duration `yaml:"timeout"`
 }
 
@@ -25,6 +25,11 @@ type Db struct {
 	Password string `json:"password"`
 	DBName   string `json:"dbname"`
 	SSLMode  string `json:"sslmode"`
+}
+
+func (c *Config) DbUrl() string {
+	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+		c.Db.Host, c.Db.Port, c.Db.Username, c.Db.Password, c.Db.DBName, c.Db.SSLMode)
 }
 
 func MustLoad(configPath string) *Config {

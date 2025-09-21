@@ -1,0 +1,263 @@
+openapi: 3.0.3
+info:
+  title: Attendance Management API
+  description: API for managing attendance with QR codes.
+  version: 0.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - id
+        - password
+      properties:
+        id:
+          type: string
+          description: User ID
+        password:
+          type: string
+          description: Password (plain text for login, but should be hashed in DB)
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Authentication token (e.g., JWT)
+
+    Schedule:
+      type: object
+      properties:
+        id:
+          type: integer
+        subject_id:
+          type: string
+        group_id:
+          type: string
+        teacher_id:
+          type: string
+        room_id:
+          type: string
+        time:
+          type: string
+          format: date-time
+
+    QRStreamRequest:
+      type: object
+      required:
+        - schedule_id
+      properties:
+        schedule_id:
+          type: integer
+          description: ID of the schedule to stream QR codes for
+
+    QRScanRequest:
+      type: object
+      required:
+        - qr_data
+        - schedule_id
+      properties:
+        qr_data:
+          type: string
+          description: Scanned QR code data
+        schedule_id:
+          type: integer
+          description: ID of the schedule the QR relates to
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+
+paths:
+  /teacher/login:
+    post:
+      summary: Teacher login
+      description: Authenticates a teacher and returns a token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /teacher/schedule:
+    get:
+      summary: Get teacher schedule
+      description: Retrieves the schedule for the authenticated teacher.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of schedules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Schedule'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /teacher/qr-stream:
+    post:
+      summary: Stream QR codes for teacher
+      description: Streams QR codes for a specific schedule (e.g., for attendance). Assumes streaming via response body.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QRStreamRequest'
+      responses:
+        '200':
+          description: Stream of QR code data
+          content:
+            text/event-stream: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /student/login:
+    post:
+      summary: Student login
+      description: Authenticates a student and returns a token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /student/schedule:
+    get:
+      summary: Get student schedule
+      description: Retrieves the schedule for the authenticated student.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of schedules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Schedule'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /student/scan:
+    post:
+      summary: Scan and send QR codes for student
+      description: Allows student to send scanned QR code data (e.g., for marking attendance).
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QRScanRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
