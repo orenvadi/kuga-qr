@@ -4,5 +4,5 @@ WORKDIR /
 COPY . .
 RUN go mod download
 RUN go build -o api cmd/lms/main.go
-EXPOSE 8080
-CMD ["./api", "-c", "/config/dev.yaml"]
+EXPOSE 8888
+CMD ["./api", 8-c", "/config/dev.yaml"]
