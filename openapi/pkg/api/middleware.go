@@ -31,7 +31,7 @@ func StrictJWTMiddlewareWithSecretKey(secretKey string) StrictMiddlewareFunc {
 				}
 			}
 
-			userID := claims["uid"].(int64)
+			userID := claims["uid"].(string)
 
 			ctx = context.WithValue(ctx, "uid", userID)
 

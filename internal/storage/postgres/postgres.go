@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgx/v5"
-	sqlc "github.com/orenvadi/kuga-lms/sql/gen"
+	sqlc "github.com/orenvadi/kuga-lms/storage/sql/gen"
 )
 
 type Storage struct {

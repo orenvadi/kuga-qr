@@ -10,4 +10,4 @@ db:
   sslmode: disable
 jwt:
   secret: fj2oewihgfaso3ertigjsldkfpo3irweguhjq350orin
-  token_ttl: 10m
+  token_ttl: 10h

@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	sqlc "github.com/orenvadi/kuga-lms/sql/gen"
+	sqlc "github.com/orenvadi/kuga-lms/storage/sql/gen"
 )
 
 // NewToken creates a new JWT token for the given user and duration.

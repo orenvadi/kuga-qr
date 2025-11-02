@@ -6,14 +6,13 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/jackc/pgx/v5/pgtype"
 	jwtn "github.com/orenvadi/kuga-lms/internal/lib/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func (s Server) PostStudentLogin(ctx context.Context, request PostStudentLoginRequestObject) (PostStudentLoginResponseObject, error) {
 	op := "server.PostStudentLogin"
-	user, err := s.db.Db.GetUser(ctx, pgtype.Text{String: request.Body.Id, Valid: true})
+	user, err := s.db.Db.GetUser(ctx, request.Body.Id)
 	if err != nil {
 		log.Printf("user not found, err: %v\n", err)
 		return PostStudentLogin404JSONResponse{}, fmt.Errorf("%s: %w", op, ErrInvalidCredentials)
@@ -39,7 +38,7 @@ func (s Server) PostStudentLogin(ctx context.Context, request PostStudentLoginRe
 
 func (s Server) PostTeacherLogin(ctx context.Context, request PostTeacherLoginRequestObject) (PostTeacherLoginResponseObject, error) {
 	op := "server.PostTeacherLogin"
-	user, err := s.db.Db.GetUser(ctx, pgtype.Text{String: request.Body.Id, Valid: true})
+	user, err := s.db.Db.GetUser(ctx, request.Body.Id)
 	if err != nil {
 		log.Printf("user not found, err: %v\n", err)
 		return PostTeacherLogin404JSONResponse{}, fmt.Errorf("%s: %w", op, ErrInvalidCredentials)

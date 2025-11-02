@@ -7,16 +7,16 @@ package sqlc
 
 import (
 	"context"
-
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const getUser = `-- name: GetUser :one
-SELECT id, full_name, password_hash FROM the_user WHERE full_name = $1
+SELECT id, full_name, password_hash
+  FROM the_user
+  WHERE id = $1
 `
 
-func (q *Queries) GetUser(ctx context.Context, fullName pgtype.Text) (TheUser, error) {
-	row := q.db.QueryRow(ctx, getUser, fullName)
+func (q *Queries) GetUser(ctx context.Context, id string) (TheUser, error) {
+	row := q.db.QueryRow(ctx, getUser, id)
 	var i TheUser
 	err := row.Scan(&i.ID, &i.FullName, &i.PasswordHash)
 	return i, err

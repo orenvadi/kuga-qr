@@ -1,4 +1,4 @@
-.PHONY: all db api down sqlc-gen
+.PHONY: all db api down sqlc-gen pg-connect
 
 all:
 	docker compose up --build
@@ -15,3 +15,5 @@ down:
 sqlc-gen:
 	go tool sqlc compile
 	go tool sqlc generate
+pg-connect:
+	pgcli postgres://dev:dev@localhost:5432/lms
