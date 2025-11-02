@@ -1,13 +1,15 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 
+	"github.com/orenvadi/kuga-lms/internal/app"
 	"github.com/orenvadi/kuga-lms/internal/config"
-	"github.com/orenvadi/kuga-lms/internal/server/handler"
 	"github.com/spf13/cobra"
 )
 
@@ -19,34 +21,37 @@ var rootCmd = &cobra.Command{
 	Long:  `A fast and simple lms`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		// ctx := context.Background()
+		ctx := context.Background()
 		cfg := config.MustLoad(configFile)
+		fmt.Printf("\nServer config: \n%+v\n\n", cfg)
 
-		// db := postgres.New(ctx, cfg.DbUrl())
-		// _ = db
+		log.Println("...STARTING APPLICATION...")
 
-		handlers := handler.New()
+		application := app.New(ctx, cfg)
 
-		srv := &http.Server{
-			Addr:        cfg.Server.Port,
-			IdleTimeout: cfg.Server.Timeout,
-			Handler:     handlers,
-		}
+		application.Run()
 
-		if err := srv.ListenAndServe(); err != nil {
-			log.Fatalf("error: %s", err)
-		}
+		log.Println("...APPLICATION RUNNING...")
+
+		stop := make(chan os.Signal, 1)
+		signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)
+
+		// reading from chan is blocking operaiton
+		sgnl := <-stop
+
+		log.Printf("stopping application, signal: %v \n", sgnl.String())
+
+		// gracefuly stop application
+		application.Stop()
+
+		log.Println("application stopped")
 	},
 }
 
-func Execute() {
+func main() {
 	rootCmd.Flags().StringVarP(&configFile, "config", "c", "config.yaml", "Path to YAML config file")
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-}
-
-func main() {
-	Execute()
 }

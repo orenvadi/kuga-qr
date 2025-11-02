@@ -1,0 +1,13 @@
+stateDiagram-v2
+    [*] --> Absent : Инициализация
+    Absent --> CheckedIn : Сканирование "Start"
+    Absent --> Error : Сканирование "End" (ошибка)
+    
+    CheckedIn --> Attended : Сканирование "End"
+    CheckedIn --> CheckedIn : Сканирование "Start" (игнор)
+    
+    Attended --> Attended : Сканирование "Start" или "End" (игнор)
+    
+    Error --> Absent : Сброс / Очистка ошибки
+    
+    note right of Error : Некорректное действие (можно игнорировать вместо перехода)

@@ -3,4 +3,5 @@ generate:
   strict-server: true
   std-http-server: true
   models: true
+  embedded-spec: true
 output: pkg/api/api.gen.go

@@ -11,6 +11,11 @@ import (
 type Config struct {
 	Server Server `yaml:"server"`
 	Db     Db     `yaml:"db"`
+	Jwt    Jwt    `yaml:"jwt"`
+}
+type Jwt struct {
+	Secret   string        `yaml:"secret"`
+	TokenTTL time.Duration `yaml:"token_ttl"`
 }
 
 type Server struct {
@@ -32,7 +37,7 @@ func (c *Config) DbUrl() string {
 		c.Db.Host, c.Db.Port, c.Db.Username, c.Db.Password, c.Db.DBName, c.Db.SSLMode)
 }
 
-func MustLoad(configPath string) *Config {
+func MustLoad(configPath string) Config {
 	var cfg Config
 	data, err := os.ReadFile(configPath)
 	if err != nil {
@@ -42,5 +47,5 @@ func MustLoad(configPath string) *Config {
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
 		panic(fmt.Errorf("failed to parse YAML: %v", err))
 	}
-	return &cfg
+	return cfg
 }

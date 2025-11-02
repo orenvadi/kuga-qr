@@ -9,7 +9,9 @@ import (
 )
 
 type Storage struct {
-	Db *sqlc.Queries
+	context    context.Context
+	Db         *sqlc.Queries
+	connection *pgx.Conn
 }
 
 func New(ctx context.Context, DbUrl string) *Storage {
@@ -20,5 +22,9 @@ func New(ctx context.Context, DbUrl string) *Storage {
 
 	db := sqlc.New(conn)
 
-	return &Storage{Db: db}
+	return &Storage{context: ctx, Db: db, connection: conn}
+}
+
+func (s *Storage) Close() error {
+	return s.connection.Close(s.context)
 }

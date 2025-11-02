@@ -8,3 +8,6 @@ db:
   password: dev
   dbname: lms
   sslmode: disable
+jwt:
+  secret: fj2oewihgfaso3ertigjsldkfpo3irweguhjq350orin
+  token_ttl: 10m
