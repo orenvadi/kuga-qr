@@ -26,8 +26,13 @@ func New(ctx context.Context, cfg config.Config) *App {
 	strictHandler := api.NewStrictHandler(server, []api.StrictMiddlewareFunc{api.StrictJWTMiddlewareWithSecretKey(cfg.Jwt.Secret)})
 
 	mux := http.NewServeMux()
+	mux.HandleFunc("/openapi.json", serveOpenAPI)
+	mux.HandleFunc("/swagger", serveSwaggerUI)
+	mux.HandleFunc("/swagger/", serveSwaggerUI)
 
 	handlers := api.HandlerFromMux(strictHandler, mux)
+
+	handlers = CORSMiddleware(handlers)
 
 	return &App{
 		context: ctx,
