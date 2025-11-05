@@ -14,8 +14,8 @@ func (s Server) GetStudentSchedule(ctx context.Context, request GetStudentSchedu
 
 	dbScheduleRows, err := s.db.Db.GetStudentSchedule(ctx, userId)
 	if err != nil {
-		log.Printf("user not found, err: %v\n", err)
-		return GetStudentSchedule500JSONResponse{Error: &serverError}, fmt.Errorf("%s: %w", op, err)
+		log.Printf("schedule not found, err: %v\n", err)
+		return GetStudentSchedule404JSONResponse{Error: &scheduleNotFound}, fmt.Errorf("%s: %w", op, err)
 	}
 
 	responseScheduleRows := convertDbStudentScheduleRowsToResponseScheduleRows(dbScheduleRows)
@@ -31,8 +31,8 @@ func (s Server) GetTeacherSchedule(ctx context.Context, request GetTeacherSchedu
 
 	dbScheduleRows, err := s.db.Db.GetTeacherSchedule(ctx, pgtype.Text{String: userId, Valid: true})
 	if err != nil {
-		log.Printf("user not found, err: %v\n", err)
-		return GetTeacherSchedule500JSONResponse{Error: &serverError}, fmt.Errorf("%s: %w", op, err)
+		log.Printf("schedule not found, err: %v\n", err)
+		return GetTeacherSchedule404JSONResponse{Error: &scheduleNotFound}, fmt.Errorf("%s: %w", op, err)
 	}
 
 	responseScheduleRows := convertDbTeacherScheduleRowsToResponseScheduleRows(dbScheduleRows)
