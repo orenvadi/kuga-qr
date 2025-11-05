@@ -8,3 +8,6 @@ sql:
         package: "sqlc"
         out: "storage/sql/gen/"
         sql_package: "pgx/v5"
+        emit_exact_table_names: true
+        emit_prepared_queries: true
+        emit_interface: true

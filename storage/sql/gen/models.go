@@ -48,7 +48,7 @@ type MarksAndAbsence struct {
 	Status     pgtype.Text
 }
 
-type Qrcode struct {
+type Qrcodes struct {
 	ID         int32
 	Code       pgtype.Text
 	ScheduleID pgtype.Int4

@@ -20,9 +20,9 @@ type CreateQrcodeParams struct {
 	ScheduleID pgtype.Int4
 }
 
-func (q *Queries) CreateQrcode(ctx context.Context, arg CreateQrcodeParams) (Qrcode, error) {
+func (q *Queries) CreateQrcode(ctx context.Context, arg CreateQrcodeParams) (Qrcodes, error) {
 	row := q.db.QueryRow(ctx, createQrcode, arg.Code, arg.ScheduleID)
-	var i Qrcode
+	var i Qrcodes
 	err := row.Scan(&i.ID, &i.Code, &i.ScheduleID)
 	return i, err
 }
@@ -31,9 +31,9 @@ const getQrcodeByScheduleID = `-- name: GetQrcodeByScheduleID :one
 SELECT id, code, schedule_id FROM qrcodes WHERE schedule_id = $1
 `
 
-func (q *Queries) GetQrcodeByScheduleID(ctx context.Context, scheduleID pgtype.Int4) (Qrcode, error) {
+func (q *Queries) GetQrcodeByScheduleID(ctx context.Context, scheduleID pgtype.Int4) (Qrcodes, error) {
 	row := q.db.QueryRow(ctx, getQrcodeByScheduleID, scheduleID)
-	var i Qrcode
+	var i Qrcodes
 	err := row.Scan(&i.ID, &i.Code, &i.ScheduleID)
 	return i, err
 }
