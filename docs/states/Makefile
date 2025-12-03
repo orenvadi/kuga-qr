@@ -1,2 +1,2 @@
 watch:
-	echo states.mmd | entr mmdc -i states.mmd -o states.pdf 
+	echo states.mmd | entr mmdc -i states.mmd -c conf.json -o states.svg
