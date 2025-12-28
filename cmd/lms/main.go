@@ -42,7 +42,7 @@ var rootCmd = &cobra.Command{
 		log.Printf("stopping application, signal: %v \n", sgnl.String())
 
 		// gracefuly stop application
-		application.Stop()
+		application.Stop(ctx)
 
 		log.Println("application stopped")
 	},

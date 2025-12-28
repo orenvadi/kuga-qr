@@ -11,9 +11,8 @@ import (
 )
 
 type App struct {
-	context context.Context
-	Server  *http.Server
-	db      *postgres.Storage
+	Server *http.Server
+	db     *postgres.Storage
 }
 
 func New(ctx context.Context, cfg config.Config) *App {
@@ -35,7 +34,6 @@ func New(ctx context.Context, cfg config.Config) *App {
 	handlers = CORSMiddleware(handlers)
 
 	return &App{
-		context: ctx,
 		Server: &http.Server{
 			Addr:        cfg.Server.Port,
 			IdleTimeout: cfg.Server.Timeout,
@@ -51,8 +49,8 @@ func (a *App) Run() {
 	}()
 }
 
-func (a *App) Stop() {
-	if err := a.Server.Shutdown(a.context); err != nil {
+func (a *App) Stop(ctx context.Context) {
+	if err := a.Server.Shutdown(ctx); err != nil {
 		log.Printf("could not stop application server: %v\n", err)
 	}
 	if err := a.db.Close(); err != nil {
